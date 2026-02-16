@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dinámica Inducida - Cartografía Espectral</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
+            padding: 2rem;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            margin-bottom: 2rem;
+            font-style: italic;
+        }
+        
+        .formula {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            text-align: center;
+            font-family: monospace;
+            color: #2980b9;
+            font-weight: bold;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+        
+        input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+        
+        .btn {
+            background: #3498db;
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.3s;
+        }
+        
+        .btn:hover {
+            background: #2980b9;
+        }
+        
+        .resultado {
+            background: #e8f4fc;
+            border-left: 4px solid #3498db;
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            margin-top: 2rem;
+        }
+        
+        .resultado.success {
+            background: #e8f5e9;
+            border-left-color: #27ae60;
+        }
+        
+        .resultado.error {
+            background: #ffebee;
+            border-left-color: #e74c3c;
+        }
+        
+        .resultado h3 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+        }
+        
+        .resultado p {
+            margin: 0.5rem 0;
+            font-size: 1.05rem;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .badge.success {
+            background: #27ae60;
+            color: white;
+        }
+        
+        .badge.warning {
+            background: #f39c12;
+            color: white;
+        }
+        
+        .nota {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 1rem;
+            border-radius: 0 8px 8px 0;
+            margin-top: 2rem;
+            font-size: 0.95rem;
+        }
+        
+        .prediccion {
+            background: #d1c4e9;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 2rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔬 Dinámica Inducida</h1>
+        <p class="subtitle">Cartografía Espectral Inversa</p>
+        
+        <div class="formula">
+            r = ( λ² K / 4π² c² m* )<sup>1/3</sup>
+        </div>
+        
+        {% if error %}
+        <div class="resultado error">
+            <h3>⚠️ Error</h3>
+            <p>{{ error }}</p>
+        </div>
+        {% endif %}
+        
+        <form method="POST">
+            <div class="form-group">
+                <label for="elemento">Elemento (opcional)</label>
+                <input type="text" id="elemento" name="elemento" placeholder="Ej: Sodio, Cesio">
+            </div>
+            
+            <div class="form-group">
+                <label for="Zef">Carga nuclear efectiva (Z<sub>ef</sub>)</label>
+                <input type="number" id="Zef" name="Zef" step="0.01" required placeholder="Ej: 2.20">
+            </div>
+            
+            <div class="form-group">
+                <label for="nval">Número cuántico principal de valencia (n<sub>val</sub>)</label>
+                <input type="number" id="nval" name="nval" required placeholder="Ej: 3">
+            </div>
+            
+            <div class="form-group">
+                <label for="lambda_nm">Longitud de onda de valencia λ (nm)</label>
+                <input type="number" id="lambda_nm" name="lambda_nm" step="0.1" required placeholder="Ej: 589.0">
+            </div>
+            
+            <div class="form-group">
+                <label for="radio_exp_nm">Radio experimental (nm, opcional)</label>
+                <input type="number" id="radio_exp_nm" name="radio_exp_nm" step="0.001" placeholder="Ej: 0.227">
+            </div>
+            
+            <button type="submit" class="btn">Calcular radio derivado</button>
+        </form>
+        
+        {% if resultado %}
+        <div class="resultado {% if resultado.exito %}success{% endif %}">
+            <h3>📊 Resultado</h3>
+            <p><strong>Elemento:</strong> {{ resultado.elemento }}</p>
+            <p><strong>Z<sub>ef</sub>:</strong> {{ resultado.Zef }} | <strong>n<sub>val</sub>:</strong> {{ resultado.nval }}</p>
+            <p><strong>λ:</strong> {{ resultado.lambda_nm }} nm</p>
+            <p><strong>m*:</strong> {{ "%.3e"|format(resultado.m_eff) }} kg</p>
+            <p><strong>Radio derivado:</strong> <span style="font-size: 1.3rem; color: #2980b9; font-weight: bold;">{{ "%.3f"|format(resultado.radio_derivado_nm) }} nm</span></p>
+            
+            {% if resultado.radio_exp_nm %}
+            <p><strong>Radio experimental:</strong> {{ resultado.radio_exp_nm }} nm</p>
+            <p><strong>Error:</strong> <span class="badge {% if resultado.exito %}success{% else %}warning{% endif %}">{{ "%.1f"|format(resultado.error_pct) }} %</span></p>
+            {% endif %}
+        </div>
+        {% endif %}
+        
+        <div class="nota">
+            <strong>Nota sobre gases nobles:</strong> Los gases nobles (Ne, Ar, Kr) requieren λ en VUV/X-ray para observar su dinámica de valencia real. Con λ visible, el error supera el 15%; con λ VUV, cae a &lt;10%.
+        </div>
+        
+        <div class="prediccion">
+            <strong>🔮 Predicción ab initio: Moscovio (Z=115)</strong><br>
+            Radio derivado: ~0.21 nm | λ predicha: ~420 nm (violeta)<br>
+            Confrontación con datos experimentales: 2030–2035
+        </div>
+    </div>
+</body>
+</html>

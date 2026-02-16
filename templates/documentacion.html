@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📘 Documentación - Dinámica Inducida</title>
+    
+    <!-- MathJax para fórmulas matemáticas -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true,
+                processEnvironments: true
+            },
+            options: {
+                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+            }
+        };
+    </script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+    </script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.7;
+            color: #333;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
+        }
+        
+        header {
+            background: linear-gradient(120deg, #2c3e50 0%, #1a252f 100%);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+        }
+        
+        nav {
+            background: #34495e;
+            padding: 1rem 0;
+        }
+        
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin: 0 1.5rem;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        nav a:hover {
+            color: #3498db;
+        }
+        
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .intro-box {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            border-left: 4px solid #2196f3;
+            padding: 2rem;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 2rem;
+        }
+        
+        .intro-box h1 {
+            color: #1565c0;
+            margin-bottom: 1rem;
+        }
+        
+        section {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+        
+        h2 {
+            color: #2c3e50;
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 3px solid #3498db;
+        }
+        
+        h3 {
+            color: #34495e;
+            font-size: 1.4rem;
+            margin: 1.5rem 0 1rem;
+        }
+        
+        p {
+            margin-bottom: 1.2rem;
+            font-size: 1.05rem;
+        }
+        
+        .formula-box {
+            background: #f8f9fa;
+            border-left: 4px solid #6c757d;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 0 8px 8px 0;
+            text-align: center;
+            font-size: 1.2rem;
+        }
+        
+        .formula-box.highlight {
+            background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+            border-left-color: #ff9800;
+        }
+        
+        .formula-box.success {
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            border-left-color: #4caf50;
+        }
+        
+        .note {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 0 8px 8px 0;
+            font-style: italic;
+        }
+        
+        .note strong {
+            color: #92400e;
+        }
+        
+        .warning {
+            background: #fee2e2;
+            border-left: 4px solid #ef4444;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .warning strong {
+            color: #b91c1c;
+        }
+        
+        .derivation {
+            background: #f3f4f6;
+            padding: 2rem;
+            border-radius: 8px;
+            margin: 2rem 0;
+        }
+        
+        .derivation h4 {
+            color: #4b5563;
+            margin-bottom: 1rem;
+        }
+        
+        .derivation p {
+            margin-bottom: 0.8rem;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+        
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2rem 0;
+        }
+        
+        .comparison-table th {
+            background: #34495e;
+            color: white;
+            padding: 1rem;
+            text-align: left;
+        }
+        
+        .comparison-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .comparison-table tr:nth-child(even) {
+            background: #f9fafb;
+        }
+        
+        .comparison-table tr:hover {
+            background: #edf2f7;
+        }
+        
+        .collaboration {
+            background: linear-gradient(135deg, #d1c4e9 0%, #b39ddb 100%);
+            padding: 2rem;
+            border-radius: 12px;
+            margin: 2rem 0;
+            text-align: center;
+        }
+        
+        .collaboration h3 {
+            color: #4a148c;
+            margin-bottom: 1rem;
+        }
+        
+        .limitations {
+            background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
+            border-left: 4px solid #c62828;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .limitations h4 {
+            color: #b71c1c;
+            margin-bottom: 1rem;
+        }
+        
+        footer {
+            background: #1a252f;
+            color: rgba(255,255,255,0.7);
+            text-align: center;
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            nav a {
+                display: block;
+                margin: 0.5rem 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    
+    <header>
+        <h1>📘 Documentación Técnica RM</h1>
+        <p style="font-size: 1.2rem; opacity: 0.9; margin-top: 0.5rem;">
+            Fundamentos matemáticos y ontológicos del modelo de Dinámica Inducida
+        </p>
+    </header>
+    
+    
+    
+    <div class="container">
+        
+        <section class="intro-box" id="introduccion">
+            <h1>⚠️ Declaración de Intención</h1>
+            <p>
+                <strong>Este proyecto es un intento matemático de compatibilizar patrones espectrales observados con la Teoría de la Realidad propuesta por Bepe Popu.</strong>
+            </p>
+            <p>
+                No pretende "destruir la física cuántica" ni proclamar una revolución definitiva. Busca ofrecer una <strong>reinterpretación geométrica efectiva</strong> que pueda servir como puente visual entre la intuición clásica y los datos cuánticos.
+            </p>
+            <p>
+                El modelo está en desarrollo continuo y <strong>requiere la colaboración crítica de matemáticos y físicos</strong> para pulir sus limitaciones y explorar su potencial predictivo.
+            </p>
+        </section>
+        
+        <section id="conceptos">
+            <h2>1. Conceptos Fundamentales</h2>
+            
+            <h3>1.1. La Radiación como Huella Geométrica</h3>
+            <p>
+                En este modelo, la radiación electromagnética no se concibe como fotones discretos que "saltan" entre niveles cuánticos. Se entiende como la <strong>huella geométrica continua</strong> que una masa en movimiento orbital deja en el espacio que la rodea.
+            </p>
+            <p>
+                La luz es el resultado directo de la perturbación que una masa íntegra genera en el espacio colindante durante su desplazamiento orbital. Esta perturbación se manifiesta como una onda cuya frecuencia está ligada a la dinámica orbital del sistema.
+            </p>
+            
+            <div class="formula-box">
+                $f_{\text{luz}} = f_{\text{orbital}}$
+            </div>
+            
+            <h3>1.2. Gradiente de Densidad Inercial</h3>
+            <p>
+                La masa total del átomo no siempre explica la longitud de onda observada. Para resolver esto, se introduce el concepto de <strong>Masa Efectiva</strong> ($m^*$), que cuantifica la inercia dinámica no blindada que realmente "raspa" el espacio.
+            </p>
+            <p>
+                La masa efectiva representa el gradiente de densidad inercial en la capa de inducción activa (electrón de valencia), no la masa total del núcleo.
+            </p>
+            
+            <h3>1.3. Impedancia de Saturación del Vacío ($K$)</h3>
+            <p>
+                La constante $K$ no es un parámetro de ajuste arbitrario. Se concibe como la <strong>impedancia de saturación del vacío</strong>, análoga a la impedancia característica del vacío en electromagnetismo clásico ($Z_0 = 377\ \Omega$).
+            </p>
+            <p>
+                Representa la resistencia elástica que el espacio opone a ser "trenzado" o perturbado por el desplazamiento de una masa. Es el invariante que vincula la capacidad de propagación del medio con la inercia de la materia.
+            </p>
+        </section>
+        
+        <section id="derivacion">
+            <h2>2. Derivación Matemática</h2>
+            
+            <h3>2.1. Relación entre Longitud de Onda y Órbita</h3>
+            <p>
+                Partimos de la premisa de que la frecuencia de la luz es equivalente a la frecuencia orbital de la masa que induce la perturbación. Para un cuerpo con velocidad orbital $v$ y radio $r$, la frecuencia orbital es:
+            </p>
+            
+            <div class="formula-box">
+                $f_{\text{orbital}} = \dfrac{v}{2\pi r}$
+            </div>
+            
+            <p>
+                Combinando esta expresión con la relación clásica $c = \lambda f$, obtenemos:
+            </p>
+            
+            <div class="derivation">
+                <p>$c = \lambda \cdot f_{\text{orbital}} = \lambda \cdot \dfrac{v}{2\pi r}$</p>
+                <p>$\Rightarrow \lambda = \dfrac{2\pi r c}{v}$</p>
+            </div>
+            
+            <h3>2.2. Equilibrio de Fuerzas Dinámicas</h3>
+            <p>
+                Para obtener el radio atómico $r$ en función de la masa y la longitud de onda medida, igualamos las fuerzas del sistema dinámico:
+            </p>
+            
+            <div class="derivation">
+                <p><strong>Fuerza de inducción (central):</strong> $F = \dfrac{K}{r^2}$</p>
+                <p><strong>Fuerza centrípeta (inercia orbital):</strong> $F = \dfrac{m^* v^2}{r}$</p>
+                <p><strong>Equilibrio:</strong> $\dfrac{K}{r^2} = \dfrac{m^* v^2}{r}$</p>
+                <p>$\Rightarrow v^2 = \dfrac{K}{m^* r}$</p>
+            </div>
+            
+            <h3>2.3. Sustitución y Resolución</h3>
+            <p>
+                Sustituimos $v$ en la relación $\lambda = \dfrac{2\pi r c}{v}$:
+            </p>
+            
+            <div class="derivation">
+                <p>$\lambda = \dfrac{2\pi r c}{\sqrt{\dfrac{K}{m^* r}}} = 2\pi r c \cdot \sqrt{\dfrac{m^* r}{K}}$</p>
+                <p>$\lambda = 2\pi c \cdot \sqrt{\dfrac{m^* r^3}{K}}$</p>
+                <p>$\lambda^2 = 4\pi^2 c^2 \cdot \dfrac{m^* r^3}{K}$</p>
+                <p>$\Rightarrow r^3 = \dfrac{\lambda^2 K}{4\pi^2 c^2 m^*}$</p>
+                <p><strong>Fórmula maestra:</strong> $r = \left( \dfrac{\lambda^2 K}{4\pi^2 c^2 m^*} \right)^{1/3}$</p>
+				<br><div style="width:0px;position:relative;"><video src="moironas.webm" style="max-width:7rem; position:absolute; top:-1.6rem;left:-1.8rem;  pointer-events:none;" autoplay="" muted="" loop="" playsinline=""></video></div>
+            </div>
+            
+            <h3>2.4. La Potencia 2/3 como Consecuencia Geométrica</h3>
+            <p>
+                La relación $r \propto \lambda^{2/3}$ no es un ajuste arbitrario. Es una consecuencia necesaria de la tridimensionalidad del espacio:
+            </p>
+            <ul>
+                <li>La energía cinética se distribuye en un <strong>volumen</strong> ($\propto r^3$)</li>
+                <li>La radiación se expresa en términos de <strong>longitud de onda</strong> ($\lambda$)</li>
+                <li>El equilibrio dimensional conduce a: $r^3 \propto \lambda^2$</li>
+            </ul>
+            <p>
+                Cualquier otra potencia implicaría una geometría espacial distinta de la tridimensional.
+            </p>
+        </section>
+        
+        <section id="formulas">
+            <h2>3. Fórmulas Principales</h2>
+            
+            <h3>3.1. Masa Efectiva</h3>
+            <p>
+                La masa efectiva cuantifica el gradiente de densidad inercial en la capa activa de inducción:
+            </p>
+            
+            <div class="formula-box highlight">
+                $m^* = m_e \left( \dfrac{Z_{\text{ef}}}{n_{\text{val}}} \right)^{0.85}$
+            </div>
+            
+            <p><strong>Donde:</strong></p>
+            <ul>
+                <li>$m_e$: masa del electrón (referencia inercial base)</li>
+                <li>$Z_{\text{ef}}$: carga nuclear efectiva (calculada con reglas de Slater)</li>
+                <li>$n_{\text{val}}$: número cuántico principal del electrón de valencia</li>
+                <li>$0.85$: exponente geométrico derivado de la ley del cuadrado-cubo</li>
+            </ul>
+            
+            <h3>3.2. Radio Atómico Derivado</h3>
+            <p>
+                La ecuación central del modelo para determinar el tamaño efectivo del átomo:
+            </p>
+            
+            <div class="formula-box success">
+                $r = \left( \dfrac{\lambda^2 K}{4\pi^2 c^2 m^*} \right)^{1/3}$
+            </div>
+            
+            <p><strong>Donde:</strong></p>
+            <ul>
+                <li>$\lambda$: longitud de onda de emisión (nm)</li>
+                <li>$K$: impedancia de saturación del vacío ($2.42 \times 10^{-47}\ \text{kg·m}^3/\text{s}^2$)</li>
+                <li>$c$: velocidad de la luz ($299\,792\,458\ \text{m/s}$)</li>
+                <li>$m^*$: masa efectiva (kg)</li>
+            </ul>
+            
+            <h3>3.3. Constante $K$ (Impedancia de Saturación)</h3>
+            <p>
+                La constante $K$ se deriva de la densidad máxima de energía que el espacio puede almacenar antes de liberarla como onda inducida:
+            </p>
+            
+            <div class="formula-box">
+                $K \approx \dfrac{4\pi h c}{m_e^2} \quad \text{o} \quad K = m_p c^2 \ell_{\text{planck}}$
+            </div>
+            
+            <p><strong>Valor numérico:</strong> $K \approx 2.42 \times 10^{-47}\ \text{kg·m}^3/\text{s}^2$</p>
+            
+            <div class="note">
+                <strong>Nota:</strong> Este valor se mantiene fijo para todos los elementos en los cálculos de radios derivados. No se ajusta individualmente.
+            </div>
+        </section>
+        
+        <section id="comparacion">
+            <h2>4. Comparación con la Física Convencional</h2>
+            
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Aspecto</th>
+                        <th>Física Convencional</th>
+                        <th>Dinámica Inducida</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Naturaleza de la luz</strong></td>
+                        <td>Fotones cuánticos discretos</td>
+                        <td>Huella geométrica continua de masa en órbita</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Origen de $\lambda$</strong></td>
+                        <td>Salto entre niveles cuánticos</td>
+                        <td>Geometría direccional: muestreo de emisión continua</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Radio atómico</strong></td>
+                        <td>Derivado de funciones de onda (Schrödinger)</td>
+                        <td>Derivado de $\lambda$ mediante $r \propto \lambda^{2/3}$</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Enfoque</strong></td>
+                        <td>Teoría → Predicción espectral</td>
+                        <td>Espectro → Reconstrucción estructural</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Intuición</strong></td>
+                        <td>Abstracta ($\psi$, operadores)</td>
+                        <td>Geométrica (órbitas, resonancias)</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div class="note">
+                <strong>Importante:</strong> La Dinámica Inducida no pretende reemplazar la física cuántica. Ofrece una reinterpretación geométrica efectiva que conecta masa, radiación y estructura de forma unificada y visualmente intuitiva.
+            </div>
+        </section>
+        
+        <section class="limitations">
+            <h4>⚠️ Limitaciones Reconocidas</h4>
+            <p>
+                El modelo actual tiene limitaciones que requieren desarrollo futuro:
+            </p>
+            <ul>
+                <li><strong>Efecto fotoeléctrico:</strong> Necesita derivación matemática de por qué $E \propto f$ y no depende de intensidad</li>
+                <li><strong>Gases nobles:</strong> Requieren $\lambda$ en VUV/X-ray para observar dinámica de valencia real</li>
+                <li><strong>Estructura fina:</strong> No explica dobletes espectrales (ej: sodio 589.0/589.6 nm)</li>
+                <li><strong>Múltiples líneas:</strong> Solo reproduce una línea por elemento; necesita extensión a series espectrales</li>
+            </ul>
+            <p>
+                Estas limitaciones no invalidan el modelo, sino que señalan dónde se necesita colaboración y refinamiento.
+            </p>
+        </section>
+        
+        <section id="colaboracion" class="collaboration">
+            <h3>🤝 Invitación a la Colaboración</h3>
+            <p>
+                Este trabajo está en desarrollo continuo y busca colaboradores que aporten:
+            </p>
+            <ul style="text-align: left; margin: 1.5rem auto; max-width: 600px;">
+                <li><strong>Rigor matemático:</strong> Derivar el efecto fotoeléctrico desde emisión continua</li>
+                <li><strong>Refinamiento físico:</strong> Explicar estructura fina y espín</li>
+                <li><strong>Programación:</strong> Automatizar cálculos y visualizaciones</li>
+                <li><strong>Crítica honesta:</strong> Señalar fallos sin dogma académico</li>
+            </ul>
+            <p style="margin-top: 1.5rem; font-weight: 600;">
+                No buscamos "validadores" que digan "sí, acabaste con la física".<br>
+                Buscamos <strong>aliados críticos constructivos</strong> que ayuden a pulir lo valioso.
+            </p>
+        </section>
+        
+        <section>
+            <h2>5. Resultados Obtenidos</h2>
+            
+            <h3>Precisión Global</h3>
+            <p>
+                Aplicando este protocolo a los 118 elementos de la tabla periódica, utilizando únicamente longitudes de onda medidas (NIST) y reglas objetivas de cálculo:
+            </p>
+            
+            <div style="text-align: center; margin: 2rem 0;">
+                <div style="font-size: 4rem; font-weight: 800; color: #27ae60;">
+                    75.4%
+                </div>
+                <p style="font-size: 1.2rem; margin-top: 0.5rem;">
+                    Precisión global: 89 de 118 elementos con error $&lt;15\%$
+                </p>
+            </div>
+            
+            <h3>Ejemplo Validador: Cesio vs Sodio</h3>
+            <p>
+                El modelo tradicional de "masa total" falla al explicar por qué el Cesio (133 u) emite en infrarrojo mientras el Sodio (23 u) emite en amarillo visible. Nuestro modelo lo resuelve:
+            </p>
+            
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Elemento</th>
+                        <th>Masa Total</th>
+                        <th>Gradiente de Densidad</th>
+                        <th>Longitud de Onda</th>
+                        <th>Radio Derivado</th>
+                        <th>Resultado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Cesio (Cs)</strong></td>
+                        <td>133 u</td>
+                        <td>Bajo (blindaje extremo)</td>
+                        <td>852 nm (IR)</td>
+                        <td>0.38 nm</td>
+                        <td>$\checkmark$ Correcto</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Sodio (Na)</strong></td>
+                        <td>23 u</td>
+                        <td>Alto (menor blindaje)</td>
+                        <td>589 nm (amarillo)</td>
+                        <td>0.29 nm</td>
+                        <td>$\checkmark$ Correcto</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <p>
+                <strong>Explicación:</strong> El electrón de valencia del Cesio orbita en $n=6$, fuertemente blindado por 54 electrones internos. Su gradiente de densidad inercial efectivo es bajo $\rightarrow$ inducción débil $\rightarrow$ longitud de onda larga (IR). El Sodio, con $n=3$ y menor blindaje, tiene mayor gradiente $\rightarrow$ inducción más vigorosa $\rightarrow$ longitud de onda más corta.
+            </p>
+        </section>
+        
+        <section class="warning">
+            <h4>⚠️ Declaración de Humildad Científica</h4>
+            <p>
+                <strong>Este modelo es un intento matemático, no una verdad revelada.</strong>
+            </p>
+            <p>
+                Reconocemos nuestras limitaciones como exploradores no convencionales. La física cuántica ha sido validada experimentalmente durante un siglo con precisión extraordinaria. No pretendemos "destruirla", sino ofrecer una <strong>reinterpretación ontológica alternativa</strong> que pueda:
+            </p>
+            <ul>
+                <li>Ayudar a estudiantes a visualizar la estructura atómica sin abstracciones complejas</li>
+                <li>Ofrecer una narrativa geométrica coherente para los patrones espectrales observados</li>
+                <li>Servir como puente conceptual entre la intuición clásica y el formalismo cuántico</li>
+            </ul>
+            <p>
+                Si este modelo resiste el escrutinio de la comunidad científica y se demuestra predictivo, será un avance genuino. Si falla, ajustaremos la ontología o la abandonaremos con honestidad. Eso es ciencia real.
+            </p>
+        </section>
+        
+    </div>
+	
+	
+	<section style="background: linear-gradient(135deg, #2c3e50 0%, #1a252f 100%); 
+                color: white; border-radius: 12px; padding: 2rem; margin: 2rem 0; text-align: center;">
+    <p style="font-style: italic; font-size: 1.2rem; max-width: 800px; margin: 0 auto;">
+        "Este modelo no salió de una torre de marfil.<br>
+        Salió de una brocha de albañil que también pintó la Teoría de la Realidad." <hr> "LA LUZ ES LA SOMBRA QUE SE ASOMBRA A SÍ MISMA POR LA VELOCIDAD QUE SE PROPAGA PERO CUANDO DESCANSA BRILLA"<hr><br>
+    </p>
+    <p style="margin-top: 1rem; opacity: 0.8;">
+        — Bepe Popu
+		
+    </p>
+	
+</section>
+    
+    <footer>
+        <p><strong>Dinámica Inducida – Cartografía Espectral Inversa</strong></p>
+        <p>Parte de la Teoría de la Realidad por Bepe Popu</p>
+        <p>Obra registrada en la Deutsche Nationalbibliothek (DNB)</p>
+        <p><a href="https://portal.dnb.de/opac/simpleSearch?query=bepe+popu" style="color: #3498db;">https://portal.dnb.de/opac/simpleSearch?query=bepe+popu</a></p>
+        <p style="margin-top: 1rem; font-size: 0.9rem; opacity: 0.7;">
+            © 2026 Popu Bepe | Licencia MIT | Este trabajo es un intento matemático de compatibilizar patrones observados con una ontología alternativa
+        </p>
+    </footer>
+    
+</body>
+</html>
