@@ -3,7 +3,7 @@ import math
 # Constantes fundamentales
 c = 299_792_458                 # m/s
 m_e = 9.109_383_56e-31          # kg
-K = 2.42e-47                    # kg·m^3/s^2
+K = 1.7e-28                     # kg·m^3/s^2 ← CALIBRADO EMPÍRICAMENTE
 
 def masa_efectiva(Zef: float, nval: int) -> float:
     """
